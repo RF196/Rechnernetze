@@ -1,0 +1,13 @@
+AUTH LOGIN\r\n
+cm5ldGlu\r\n
+bnRzbW9iaWw=\r\n
+MAIL FROM:<rnetin@htwg-konstanz.de>\r\n
+RCPT TO:<lu391kal@htwg-konstanz.de>\r\n
+DATA\r\n
+From:<rnetin@htwg-konstanz.de>\r\n
+To:<fritz@example.org>\r\n
+Subject: Hallo\r\n
+\r\n
+Das ist ein Test.\r\n
+.\r\n
+QUIT\r\n
