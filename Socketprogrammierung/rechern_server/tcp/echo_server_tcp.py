@@ -1,3 +1,5 @@
+from threading import Thread
+
 from Socketprogrammierung.rechern_server.operations import process_request
 import socket
 import time
@@ -15,27 +17,30 @@ t_end = time.time() + server_activity_period  # Ende der Aktivitätsperiode
 sock.listen(1)
 print('Listening ...')
 
+
+def process_incoming_request():
+    while time.time() < t_end:
+        try:
+            data = conn.recv(1024)
+            if not data:  # receiving empty messages means that the socket other side closed the socket
+                print('Connection closed from other side')
+                print('Closing ...')
+                conn.close()
+                break
+            print('received message from ', addr)
+            result = process_request(data)
+            conn.send(result)
+        except socket.timeout:
+            print('Socket timed out at', time.asctime())
+
+
 while time.time() < t_end:
     try:
         conn, addr = sock.accept()
         print('Incoming connection accepted: ', addr)
-        break
+        Thread(process_incoming_request()).start()
     except socket.timeout:
         print('Socket timed out listening', time.asctime())
-
-while time.time() < t_end:
-    try:
-        data = conn.recv(1024)
-        if not data:  # receiving empty messages means that the socket other side closed the socket
-            print('Connection closed from other side')
-            print('Closing ...')
-            conn.close()
-            break
-        print('received message from ', addr)
-        result = process_request(data)
-        conn.send(result)
-    except socket.timeout:
-        print('Socket timed out at', time.asctime())
 
 sock.close()
 if conn:
