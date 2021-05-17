@@ -14,13 +14,18 @@ sock.bind((My_IP, My_PORT))
 sock.settimeout(10)
 t_end = time.time() + server_activity_period  # Ende der Aktivitätsperiode
 
+
+def process_incoming_request(data, addr):
+    print('received message: from ', addr)
+    print(data)
+    result = process_request(data)
+    sock.sendto(result, addr)
+
+
 while time.time() < t_end:
     try:
         data, addr = sock.recvfrom(1024)
-        print('received message: from ', addr)
-        print(data)
-        result = process_request(data)
-        sock.sendto(result, addr)
+        process_incoming_request(data, addr)
     except socket.timeout:
         print('Socket timed out at', time.asctime())
 
