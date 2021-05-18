@@ -3,7 +3,9 @@ from functools import partial
 
 from Socketprogrammierung.rechern_server.operations import send_operation
 
-Server_IP = '127.0.0.1'
+# Alban '141.37.204.51' Robert '141.37.194.3'
+
+Server_IP = '141.37.204.51' #'127.0.0.1'
 Server_PORT = 50000
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
