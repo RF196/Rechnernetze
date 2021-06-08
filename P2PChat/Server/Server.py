@@ -1,16 +1,26 @@
 import pickle
 import socket
 import threading
-
+import socket
+import struct
 from P2PChat.Server.Protocol import del_user, protocol_broadcast
+
+
+def get_ip_address():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("8.8.8.8", 80))
+    return s.getsockname()[0]
+
+
+IP = get_ip_address()
 
 
 class Server:
     def __init__(self):
         self.user_list = []
-        self.ip = '127.0.0.1'  # str(socket.gethostbyname(socket.gethostname()))
-        self.tcp_port = 50000
-        self.udp_port = 51000
+        self.ip = IP
+        self.tcp_port = 1400
+        self.udp_port = 1401
         self.sock_tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock_udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sock_tcp.bind((self.ip, self.tcp_port))

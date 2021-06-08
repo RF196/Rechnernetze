@@ -1,10 +1,7 @@
 import pickle
 import socket
-import sys
 import threading
 import time
-import errno
-import colorit
 
 # Farben
 GREY = '\033[37m'
@@ -15,7 +12,15 @@ ENDC = '\033[0m'
 
 from P2PChat.Client.Protocol import protocol_broadcast, protocol_stups, protocol_message, protocol_login
 
-IP = '127.0.0.13'
+
+def get_ip_address():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("8.8.8.8", 80))
+    return s.getsockname()[0]
+
+
+IP = get_ip_address()
+SERVER_IP = '.....' # Je nachdem wer den Server startet abändern
 START = 12607
 REMSocket = None
 MSG_SIZE = 8
@@ -42,7 +47,7 @@ class Client:
     def connect(self, name):
         try:
             self.name = name
-            self.sock_tcp_server.connect(('127.0.0.1', 50000))
+            self.sock_tcp_server.connect((IP, 1400))
             user_info = pickle.dumps(protocol_login(name, IP, self.udp_port))
             self.sock_tcp_server.send(user_info)
             connect_response = self.sock_tcp_server.recv(4096)
@@ -103,7 +108,7 @@ class Client:
                 for user in self.user_list:
                     if user["nick_name"] == self.name:
                         continue
-                    print(GREY + user["nick_name"]+str(":") + GREEN + str("  ONLINE") + ENDC)
+                    print(GREY + user["nick_name"] + str(":") + GREEN + str("  ONLINE") + ENDC)
             elif data["operation"] == "del":
                 self.user_list.remove(data["user_info"])
                 nick_name = data["user_info"]["nick_name"]
@@ -168,9 +173,9 @@ class Client:
                 msg = input()  # einlesen der nachricht
                 if msg == "quit":
                     break
-                b_msg = pickle.dumps(protocol_message(msg))           # verpacken der nachricht
+                b_msg = pickle.dumps(protocol_message(msg))  # verpacken der nachricht
                 b_msg = f'{len(b_msg):<{MSG_SIZE}}'.encode() + b_msg  # Nachrichtengröße + Nachricht selber
-                sock.send(b_msg)                                      # und ab die post
+                sock.send(b_msg)  # und ab die post
             except OSError as e:
                 print("Die Unterhaltung ist beendet")
                 break
