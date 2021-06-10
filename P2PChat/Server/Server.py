@@ -30,10 +30,10 @@ class Server:
         print(f"Verbindung zu {addr} wurde aufgebaut")
         while True:
             try:
-                msg = conn.recv(4096)
-                if not msg:
+                b_msg: bytes = conn.recv(4096)
+                if not b_msg:
                     break
-                user_info = pickle.loads(msg)  # Entpacke Message
+                user_info = pickle.loads(b_msg)  # Entpacke Message
                 if user_info["operation"] == "broadcast":
                     self.broadcast(protocol_broadcast(user_info["msg"], user_info["from"]), addr)
                 else:

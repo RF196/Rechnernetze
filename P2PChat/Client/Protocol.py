@@ -78,8 +78,8 @@ def protocol_stups(name, socket):
         "operation": "stups",
         "user_info": f"Du wurdest von {name} angestupst!\n"
                      f"Sein port: {socket}\n"
+                     f"Um zu chatten: \n"
                      f"chat <name> <port>     : Anschreiben\n"
-                     f"stups <name>           : Zurückstupsen\n"
     }
     return stups
 

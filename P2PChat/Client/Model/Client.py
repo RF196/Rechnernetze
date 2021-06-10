@@ -20,7 +20,7 @@ def get_ip_address():
 
 
 IP = get_ip_address()
-SERVER_IP = '.....' # Je nachdem wer den Server startet abändern
+SERVER_IP = '141.37.206.18'  # Je nachdem wer den Server startet abändern
 START = 12607
 REMSocket = None
 MSG_SIZE = 8
@@ -47,7 +47,7 @@ class Client:
     def connect(self, name):
         try:
             self.name = name
-            self.sock_tcp_server.connect((IP, 1400))
+            self.sock_tcp_server.connect((SERVER_IP, 1400))
             user_info = pickle.dumps(protocol_login(name, IP, self.udp_port))
             self.sock_tcp_server.send(user_info)
             connect_response = self.sock_tcp_server.recv(4096)
@@ -148,20 +148,19 @@ class Client:
         sock = socket
         while True:
             try:
-                while True:
-                    b_msg = sock.recv(16)
-                    if new_msg:
-                        _msg_size = int(b_msg[:MSG_SIZE])
-                        new_msg = False
-                    b_full_msg += b_msg
-                    if len(b_full_msg) - MSG_SIZE == _msg_size:
-                        msg = pickle.loads(b_full_msg[MSG_SIZE:])
-                        if msg == "quit":
-                            break
-                        print(msg['user_info'])
-                        new_msg = True
-                        b_full_msg = b''
-            except OSError as e:
+                b_msg = sock.recv(16)
+                if new_msg:
+                    _msg_size = int(b_msg[:MSG_SIZE])
+                    new_msg = False
+                b_full_msg += b_msg
+                if len(b_full_msg) - MSG_SIZE == _msg_size:
+                    msg = pickle.loads(b_full_msg[MSG_SIZE:])
+                    if msg == "quit":
+                        break
+                    print(msg['user_info'])
+                    new_msg = True
+                    b_full_msg = b''
+            except Exception:
                 print("Die Unterhaltung wurde beendet!")
                 break
         sock.close()
@@ -188,7 +187,8 @@ class Client:
         if addr:
             self.sock_udp.sendto(pickle.dumps(stups_user), addr)
             print("Bitte warten Sie bis die Unterhaltung startet...")
-            while True:
+            t_end = time.time() + 20 * 1
+            while time.time() < t_end:
                 if not REMSocket:
                     pass
                 else:
@@ -197,7 +197,7 @@ class Client:
                     send_task.start()
                     send_task.join()
                     break
-
+            print("Die angestupste Person hat leider nicht reagiert.")
         else:
             print("User ist nicht auf dem Server!")
 
