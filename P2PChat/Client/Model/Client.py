@@ -19,8 +19,8 @@ def get_ip_address():
     return s.getsockname()[0]
 
 
-IP = get_ip_address()
-SERVER_IP = '141.37.206.18'  # Je nachdem wer den Server startet abändern
+IP = get_ip_address()  # 127.0.0.1
+SERVER_IP = '141.37.194.5' #'127.0.0.1'  # Je nachdem wer den Server startet abändern
 START = 12607
 REMSocket = None
 MSG_SIZE = 8
@@ -47,7 +47,7 @@ class Client:
     def connect(self, name):
         try:
             self.name = name
-            self.sock_tcp_server.connect((SERVER_IP, 1400))
+            self.sock_tcp_server.connect((SERVER_IP, 1405))
             user_info = pickle.dumps(protocol_login(name, IP, self.udp_port))
             self.sock_tcp_server.send(user_info)
             connect_response = self.sock_tcp_server.recv(4096)
